@@ -14,6 +14,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
 
 add_executable(desafio1
   main.cpp
+  funciones.h
 )
 target_link_libraries(desafio1 Qt${QT_VERSION_MAJOR}::Core)
 
