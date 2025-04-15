@@ -146,20 +146,16 @@ void restarArreglos(unsigned int*ptrTxt, unsigned char*ptrM, int nPixeles){
 
 unsigned char identificarTransformacion(unsigned int*ptrTxt, unsigned char*ptrI_D, int seed){
     /*
- * @brief identifica cual transformacion se el ha aplicado al array del txt.
+ * @brief ind
  *
- * Esta función abre un archivo de texto que contiene una semilla en la primera línea y,
- * a continuación, una lista de valores RGB resultantes del proceso de enmascaramiento.
- * Primero cuenta cuántos tripletes de píxeles hay, luego reserva memoria dinámica
- * y finalmente carga los valores en un arreglo de enteros.
+ * ind
  *
- * @param nombreArchivo Ruta del archivo de texto que contiene la semilla y los valores RGB.
+ * @param ptrTxt Ruta del archivo de texto que contiene la semilla y los valores RGB.
  * @param seed Variable de referencia donde se almacenará el valor entero de la semilla.
  * @param n_pixels Variable de referencia donde se almacenará la cantidad de píxeles leídos
  *                 (equivalente al número de líneas después de la semilla).
  *
- * @return Puntero a un arreglo dinámico de enteros que contiene los valores RGB
- *         en orden secuencial (R, G, B, R, G, B, ...). Devuelve nullptr si ocurre un error al abrir el archivo.
+ * @return ind
  *
  * @note
  */
@@ -169,17 +165,17 @@ unsigned char identificarTransformacion(unsigned int*ptrTxt, unsigned char*ptrI_
     return transformacion;
 }
 
-void transformacionInversa(unsigned char*ptrP,unsigned char transformacion){
+void transformacionInversa(unsigned char*ptrI_D,unsigned char transformacion,int weightI_D,int heightI_D){
     /*
- * @brief Carga la semilla y los resultados del enmascaramiento desde un archivo de texto.
+ * @brief Aplica la transformacion inversa al array dado.
  *
- * Esta función abre un archivo de texto que contiene una semilla en la primera línea y,
- * a continuación, una lista de valores RGB resultantes del proceso de enmascaramiento.
- * Primero cuenta cuántos tripletes de píxeles hay, luego reserva memoria dinámica
- * y finalmente carga los valores en un arreglo de enteros.
+ * Esta funcion le aplica la inversa de la transformacion dada al array dado, con ayuda de
+ * los parametros del alto y ancho de pixeles de la imagen.
  *
- * @param ptrP Ruta del archivo de texto que contiene la semilla y los valores RGB.
- * @param transformacion Variable de referencia donde se almacenará el valor entero de la semilla.
+ * @param ptrP puntero del array a aplicarle la inversa.
+ * @param transformacion identificador de la transformacion hecha.
+ * @param weightI_D ancho de la imagen a la que le corresponde ptrI_D.
+ * @param heightI_D alto de la imagen a la que le corresponde ptrI_D
  *
  * @return vacio.
  *
