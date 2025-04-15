@@ -99,8 +99,6 @@ unsigned int* loadSeedMasking(const char* nombreArchivo, int &seed, int &n_pixel
 
     ifstream archivo(nombreArchivo);
     if (!archivo.is_open()) {
-        cout << "No se pudo abrir el archivo." << endl;
-        return nullptr;
     }
     archivo >> seed;
     int r, g, b;
@@ -127,23 +125,66 @@ unsigned int* loadSeedMasking(const char* nombreArchivo, int &seed, int &n_pixel
     return RGB;
 }
 
-void restarArreglos(unsigned char*ptrTxt, unsigned char*ptrM){
-
-
+void restarArreglos(unsigned int*ptrTxt, unsigned char*ptrM, int nPixeles){
+    /*
+ * @brief Resta la mascara de los datos de un txt.
+ *
+ * Esta función resta el arreglo lineal de la mascara (dado por la funcion loadPixels) del
+ * arreglo lineal de un txt (dado por la funcion loadSeedMasking).
+ *
+ * @param ptrTxt puntero del arreglo lineal del txt (unsigned int).
+ * @param ptrM puntero del arreglo lineal de la mascara (unsigned char).
+ * @param nPixeles entero que representa el numero de pixeles (conjunto R,G,B) representados en el txt.
+ *
+ * @return vacio. (nomas modifica el arreglo dinamico de txt)
+ *
+ * @note
+ */
 
 
 }
 
-unsigned char identificarTransformacion(unsigned char*ptrTxt){
+unsigned char identificarTransformacion(unsigned int*ptrTxt, unsigned char*ptrI_D, int seed){
+    /*
+ * @brief identifica cual transformacion se el ha aplicado al array del txt.
+ *
+ * Esta función abre un archivo de texto que contiene una semilla en la primera línea y,
+ * a continuación, una lista de valores RGB resultantes del proceso de enmascaramiento.
+ * Primero cuenta cuántos tripletes de píxeles hay, luego reserva memoria dinámica
+ * y finalmente carga los valores en un arreglo de enteros.
+ *
+ * @param nombreArchivo Ruta del archivo de texto que contiene la semilla y los valores RGB.
+ * @param seed Variable de referencia donde se almacenará el valor entero de la semilla.
+ * @param n_pixels Variable de referencia donde se almacenará la cantidad de píxeles leídos
+ *                 (equivalente al número de líneas después de la semilla).
+ *
+ * @return Puntero a un arreglo dinámico de enteros que contiene los valores RGB
+ *         en orden secuencial (R, G, B, R, G, B, ...). Devuelve nullptr si ocurre un error al abrir el archivo.
+ *
+ * @note
+ */
 
 
-
-
+    unsigned char transformacion = 0;
     return transformacion;
 }
 
-void transformacionInversa(unsigned char*ptrP,transformacion){
-
+void transformacionInversa(unsigned char*ptrP,unsigned char transformacion){
+    /*
+ * @brief Carga la semilla y los resultados del enmascaramiento desde un archivo de texto.
+ *
+ * Esta función abre un archivo de texto que contiene una semilla en la primera línea y,
+ * a continuación, una lista de valores RGB resultantes del proceso de enmascaramiento.
+ * Primero cuenta cuántos tripletes de píxeles hay, luego reserva memoria dinámica
+ * y finalmente carga los valores en un arreglo de enteros.
+ *
+ * @param ptrP Ruta del archivo de texto que contiene la semilla y los valores RGB.
+ * @param transformacion Variable de referencia donde se almacenará el valor entero de la semilla.
+ *
+ * @return vacio.
+ *
+ * @note
+ */
 
 
 
