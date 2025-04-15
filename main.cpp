@@ -4,6 +4,8 @@
 #include <QImage>
 #include "funciones.h"
 
+using namespace std;
+
 int main(){
     QString rutaImagenP,rutaImagenM,rutaImagenI_M,rutaImagenF; // rutas de las imagenes
     int = weightP,heightP,weightM,heightM,weightI_M,heightI_M; // anchos y largos de las imagenes
