@@ -140,6 +140,11 @@ void restarArreglos(unsigned int*ptrTxt, unsigned char*ptrM, int nPixeles){
  *
  * @note
  */
+    for (int k = 0; k < nPixeles * 3; k++) {
+        ptrM[k] = ptrM[k] - static_cast<char>(ptrTxt[k]);
+        cout << ptrM [k];
+    }
+
 
 
 }
@@ -159,7 +164,6 @@ unsigned char identificarTransformacion(unsigned int*ptrTxt, unsigned char*ptrI_
  *
  * @note
  */
-
 
     unsigned char transformacion = 0;
     return transformacion;
