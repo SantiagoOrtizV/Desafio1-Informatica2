@@ -8,10 +8,8 @@
 
 using namespace std;
 
-unsigned int rotate(unsigned int ent, unsigned int n) {
-    const unsigned int bits = sizeof(ent) * 8;
-    n %= bits; // por si el desplazamiento es mayor al tamaño
-    return (ent << n) | (ent >> (bits - n));
+unsigned char rotate(unsigned char ent, unsigned int n) {
+    return (ent >> n) | (ent << (8 - n));
 }
 
 unsigned char* loadPixels(QString input, int &width, int &height){
@@ -187,7 +185,6 @@ unsigned char identificarTransformacion(unsigned int*ptrTxt, unsigned char*ptrI_
     cout << print1 << endl;
     cout << print2 << endl;
     for (int i=0; con!=1; i++){
-        transformacion = 0;
         con = 0;
         unsigned char aux = ptrTxt[i];
         if((aux^ptrI_M[seed+i])==ptrI_D[seed+i]){ //xor
@@ -238,21 +235,25 @@ void transformacionInversa(unsigned char*ptrI_D,unsigned char transformacion,int
             for(unsigned int i=0;i<tam;i++){
                 ptrI_D[i] = ptrI_D[i]^ptrI_M[i];
             }
+            break;
         }
         case 1:{
             for(unsigned int i=0;i<tam;i++){
                 ptrI_D[i] = ptrI_D[i]<<transformacion%10;
             }
+            break;
         }
         case 2:{
             for(unsigned int i=0;i<tam;i++){
                 ptrI_D[i] = ptrI_D[i]>>transformacion%10;
             }
+            break;
         }
         case 3:{
             for(unsigned int i=0;i<tam;i++){
-                rotate(ptrI_D[i], 8-(transformacion%10));
+                ptrI_D[i] = rotate(ptrI_D[i], 8-(transformacion%10));
             }
+            break;
         }
     }
 }
