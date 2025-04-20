@@ -8,6 +8,12 @@
 
 using namespace std;
 
+unsigned int rotate(unsigned int ent, unsigned int n) {
+    const unsigned int bits = sizeof(ent) * 8;
+    n %= bits; // por si el desplazamiento es mayor al tamaño
+    return (ent << n) | (ent >> (bits - n));
+}
+
 unsigned char* loadPixels(QString input, int &width, int &height){
     /*
  * @brief Carga una imagen BMP desde un archivo y extrae los datos de píxeles en formato RGB.
@@ -96,7 +102,6 @@ unsigned int* loadSeedMasking(const char* nombreArchivo, int &seed, int &n_pixel
  *
  * @note Es responsabilidad del usuario liberar la memoria reservada con delete[].
  */
-
     ifstream archivo(nombreArchivo);
     if (!archivo.is_open()) {
     }
@@ -141,15 +146,18 @@ void restarArreglos(unsigned int*ptrTxt, unsigned char*ptrM, int nPixeles){
  * @note
  */
     for (int k = 0; k < nPixeles * 3; k++) {
-        ptrM[k] = ptrM[k] - static_cast<char>(ptrTxt[k]);
-        cout << ptrM [k];
+        unsigned int print0 = ptrTxt[k];
+        unsigned int print1 = ptrM[k];
+        ptrTxt[k] = ptrTxt[k] - ptrM[k];
+        unsigned int print2 = ptrTxt[k];
+        cout << print0 << "  " << print1 << "  " << print2 << endl;
     }
 
 
 
 }
 
-unsigned char identificarTransformacion(unsigned int*ptrTxt, unsigned char*ptrI_D, int seed){
+unsigned char identificarTransformacion(unsigned int*ptrTxt, unsigned char*ptrI_D, int seed, unsigned char* ptrI_M){
     /*
  * @brief ind
  *
@@ -164,12 +172,51 @@ unsigned char identificarTransformacion(unsigned int*ptrTxt, unsigned char*ptrI_
  *
  * @note
  */
-
-    unsigned char transformacion = 0;
+    int con = 0;
+    unsigned char transformacion;
+    unsigned int printX0 = ptrI_M[seed+0];
+    unsigned int printX1 = ptrI_M[seed+1];
+    unsigned int printX2 = ptrI_M[seed+2];
+    cout << endl << printX0 << endl;
+    cout << printX1 << endl;
+    cout << printX2 << endl;
+    unsigned int print0 = ptrI_D[seed+0];
+    unsigned int print1 = ptrI_D[seed+1];
+    unsigned int print2 = ptrI_D[seed+2];
+    cout << endl << print0 << endl;
+    cout << print1 << endl;
+    cout << print2 << endl;
+    for (int i=0; con!=1; i++){
+        transformacion = 0;
+        con = 0;
+        unsigned char aux = ptrTxt[i];
+        if((aux^ptrI_M[seed+i])==ptrI_D[seed+i]){ //xor
+            con++;
+            transformacion = 0;
+        }
+        for(int k=1;k<=8;k++){
+            if(aux>>k==ptrI_D[seed+i]){ //despl. der.
+                con++;
+                transformacion = 10 + k;
+            }
+        }
+        for(int k=1;k<=7;k++){
+            if(aux<<k==ptrI_D[seed+i]){ //despl. izq.
+                con++;
+                transformacion = 20 + k;
+            }
+        }
+        for(unsigned int k=0;k<=7;k++){
+            if(rotate(aux,k)==ptrI_D[seed+i]){ //rot
+                con++;
+                transformacion = 30 + k;
+            }
+        }
+    }
     return transformacion;
 }
 
-void transformacionInversa(unsigned char*ptrI_D,unsigned char transformacion,int weightI_D,int heightI_D){
+void transformacionInversa(unsigned char*ptrI_D,unsigned char transformacion,int weightI_D,int heightI_D, unsigned char* ptrI_M){
     /*
  * @brief Aplica la transformacion inversa al array dado.
  *
@@ -185,9 +232,29 @@ void transformacionInversa(unsigned char*ptrI_D,unsigned char transformacion,int
  *
  * @note
  */
-
-
-
+    unsigned int tam = weightI_D * heightI_D * 3;
+    switch(transformacion/10){
+        case 0:{
+            for(unsigned int i=0;i<tam;i++){
+                ptrI_D[i] = ptrI_D[i]^ptrI_M[i];
+            }
+        }
+        case 1:{
+            for(unsigned int i=0;i<tam;i++){
+                ptrI_D[i] = ptrI_D[i]<<transformacion%10;
+            }
+        }
+        case 2:{
+            for(unsigned int i=0;i<tam;i++){
+                ptrI_D[i] = ptrI_D[i]>>transformacion%10;
+            }
+        }
+        case 3:{
+            for(unsigned int i=0;i<tam;i++){
+                rotate(ptrI_D[i], 8-(transformacion%10));
+            }
+        }
+    }
 }
 
 #endif
