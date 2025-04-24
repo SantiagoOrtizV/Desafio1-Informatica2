@@ -35,11 +35,7 @@ int main(){
         delete [] ptrTxt;
         ptrTxt = nullptr;
     }
-    unsigned int np;
-    for (int i=nTxt-1;i>=0;i--){
-        np = transformaciones[i];
-        cout << np << endl;
-    }
+    PrintTransformaciones(transformaciones,nTxt);
     delete [] ptrI_D;
     ptrI_D = nullptr;
     delete [] ptrM;

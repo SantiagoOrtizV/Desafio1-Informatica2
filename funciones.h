@@ -56,38 +56,6 @@ unsigned char* loadPixels(QString input, int &width, int &height){
     return pixelData;
 }
 
-bool exportImage(unsigned char* pixelData, int width,int height, QString archivoSalida){
-    /*
- * @brief Exporta una imagen en formato BMP a partir de un arreglo de píxeles en formato RGB.
- *
- * Esta función crea una imagen de tipo QImage utilizando los datos contenidos en el arreglo dinámico
- * `pixelData`, que debe representar una imagen en formato RGB888 (3 bytes por píxel, sin padding).
- * A continuación, copia los datos línea por línea a la imagen de salida y guarda el archivo resultante
- * en formato BMP en la ruta especificada.
- *
- * @param pixelData Puntero a un arreglo de bytes que contiene los datos RGB de la imagen a exportar.
- *                  El tamaño debe ser igual a width * height * 3 bytes.
- * @param width Ancho de la imagen en píxeles.
- * @param height Alto de la imagen en píxeles.
- * @param archivoSalida Ruta y nombre del archivo de salida en el que se guardará la imagen BMP (QString).
- *
- * @return true si la imagen se guardó exitosamente; false si ocurrió un error durante el proceso.
- *
- * @note La función no libera la memoria del arreglo pixelData; esta responsabilidad recae en el usuario.
- */
-
-    QImage outputImage(width, height, QImage::Format_RGB888);
-    for (int y = 0; y < height; ++y) {
-        memcpy(outputImage.scanLine(y), pixelData + y * width * 3, width * 3);
-    }
-    if (!outputImage.save(archivoSalida, "BMP")) {
-        cout << "Error: No se pudo guardar la imagen BMP modificada.";
-        return false;
-    } else {
-        cout << "Imagen BMP modificada guardada como " << archivoSalida.toStdString() << endl;
-        return true;
-    }
-}
 
 unsigned int* loadSeedMasking(const char* nombreArchivo, int &seed, int &n_pixels){
     /*
@@ -131,8 +99,6 @@ unsigned int* loadSeedMasking(const char* nombreArchivo, int &seed, int &n_pixel
         RGB[i + 2] = b;
     }
     archivo.close();
-    cout << "Semilla: " << seed << endl;
-    cout << "Cantidad de pixeles leidos: " << n_pixels << endl;
     return RGB;
 }
 
@@ -257,6 +223,26 @@ void identificarTransformacion(unsigned int* ptrTxt,unsigned char* ptrI_D,int se
         }
     }
     transformaciones[contArr] = transformacion;
+}
+
+void PrintTransformaciones(unsigned char* transformaciones, unsigned int nTxt){
+    for (unsigned int i = 0 ; i < nTxt ; i++){
+        switch(transformaciones[i]/10){
+            case 0:
+                cout << "la tranformacion #" << i+1 << " es xOR" << endl;
+                break;
+            case 1:
+                cout << "la tranformacion #" << i+1 << " es desplazamiento a la izquierda de: " << transformaciones[nTxt-1-i]%10 << endl;
+                break;
+            case 2:
+                cout << "la tranformacion #" << i+1 << " es desplazamiento a la derecha de: " << transformaciones[nTxt-1-i]%10 << endl;
+                break;
+            case 3:
+                cout << "la tranformacion #" << i+1 << " es Rotacion a la derecha de: " << transformaciones[nTxt-1-i]%10 << endl;
+                break;
+        }
+    }
+
 }
 
 #endif
