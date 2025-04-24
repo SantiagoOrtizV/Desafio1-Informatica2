@@ -5,8 +5,16 @@
 #include <iostream>
 #include <QCoreApplication>
 #include <QImage>
+#include <QDir>
+#include <QDebug>
+
 
 using namespace std;
+
+QString construirRutaArchivo(const QString& carpeta, const QString& nombreArchivo) {
+    QDir dir(carpeta);
+    return dir.filePath(nombreArchivo);
+}
 
 unsigned char rotate(unsigned char ent, unsigned int n) {
     return (ent >> n) | (ent << (8 - n));

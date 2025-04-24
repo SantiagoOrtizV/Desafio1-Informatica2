@@ -8,20 +8,17 @@
 using namespace std;
 
 int main(){
-    string rutaInputI_D,rutaInputM,rutaInputI_M; // rutas de las imagenes
-    int weightI_D,heightI_D,weightM,heightM,weightI_M,heightI_M; // anchos y largos de las imagenes
-    unsigned int nTxt;// numero de txts
-    cout << "Ingrese la ruta de la imagen I_D: "; // ENTRADAS RUTAS
-    getline(cin, rutaInputI_D);
-    QString rutaI_D = QString::fromStdString(rutaInputI_D);
+    int weightI_D,heightI_D,weightM,heightM,weightI_M,heightI_M;
+    string rutaCarpeta;
+    cout << "Ingrese la ruta de la carpeta: ";
+    getline(cin,rutaCarpeta);
+    QString parCarpeta = QString::fromStdString(rutaCarpeta);
+    unsigned int nTxt;
+    QString rutaI_D = construirRutaArchivo(parCarpeta,"I_D.bmp");
     unsigned char* ptrI_D = loadPixels(rutaI_D, weightI_D, heightI_D); // apuntador hacia datos imagen
-    cout << "Ingrese la ruta de la imagen M: ";
-    getline(cin, rutaInputM);
-    QString rutaM = QString::fromStdString(rutaInputM);
+    QString rutaM = construirRutaArchivo(parCarpeta,"M.bmp");
     unsigned char* ptrM = loadPixels(rutaM, weightM, heightM);
-    cout << "Ingrese la ruta de la imagen I_M: ";
-    getline(cin, rutaInputI_M);
-    QString rutaI_M = QString::fromStdString(rutaInputI_M);
+    QString rutaI_M = construirRutaArchivo(parCarpeta,"I_M.bmp");
     unsigned char* ptrI_M = loadPixels(rutaI_M, weightI_M, heightI_M);
     cout << "Ingrese la cantidad de archivos txt: ";
     cin >> nTxt;
@@ -30,10 +27,9 @@ int main(){
     for(unsigned char i=0;i<nTxt;i++){ //CANTIDAD DE TXTs
         int seed;
         int nPixeles = 0;
-        string rutaInputTxt;
-        cout << "Ingrese la ruta del txt correspondiente: "; // ENTRADAS RUTAS
-        getline(cin, rutaInputTxt);
-        unsigned int* ptrTxt = loadSeedMasking(rutaInputTxt.c_str(), seed, nPixeles); // apuntador hacia datos txt // (primer parametro verificar)
+        QString rutaInputTxt = construirRutaArchivo(parCarpeta,QString("M%1.txt").arg(nTxt-i-1));
+        string InputTxt = rutaInputTxt.toStdString();
+        unsigned int* ptrTxt = loadSeedMasking(InputTxt.c_str(), seed, nPixeles); // apuntador hacia datos txt // (primer parametro verificar)
         restarArreglos(ptrTxt, ptrM, nPixeles);
         identificarTransformacion(ptrTxt,ptrI_D,seed,ptrI_M,transformaciones,i);
         delete [] ptrTxt;
