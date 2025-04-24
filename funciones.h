@@ -8,10 +8,8 @@
 
 using namespace std;
 
-unsigned int rotate(unsigned int ent, unsigned int n) {
-    const unsigned int bits = sizeof(ent) * 8;
-    n %= bits; // por si el desplazamiento es mayor al tamaño
-    return (ent << n) | (ent >> (bits - n));
+unsigned char rotate(unsigned char ent, unsigned int n) {
+    return (ent >> n) | (ent << (8 - n));
 }
 
 unsigned char* loadPixels(QString input, int &width, int &height){
@@ -146,18 +144,49 @@ void restarArreglos(unsigned int*ptrTxt, unsigned char*ptrM, int nPixeles){
  * @note
  */
     for (int k = 0; k < nPixeles * 3; k++) {
-        unsigned int print0 = ptrTxt[k];
-        unsigned int print1 = ptrM[k];
         ptrTxt[k] = ptrTxt[k] - ptrM[k];
-        unsigned int print2 = ptrTxt[k];
-        cout << print0 << "  " << print1 << "  " << print2 << endl;
     }
 
 
 
 }
-
-unsigned char identificarTransformacion(unsigned int*ptrTxt, unsigned char*ptrI_D, int seed, unsigned char* ptrI_M){
+unsigned char doTransformation(unsigned char transformacion, unsigned char n, unsigned char nXor){
+    /*
+ * @brief Aplica la transformacion inversa al array dado.
+ *
+ * Esta funcion le aplica la inversa de la transformacion dada al array dado, con ayuda de
+ * los parametros del alto y ancho de pixeles de la imagen.
+ *
+ * @param ptrP puntero del array a aplicarle la inversa.
+ * @param transformacion identificador de la transformacion hecha.
+ * @param weightI_D ancho de la imagen a la que le corresponde ptrI_D.
+ * @param heightI_D alto de la imagen a la que le corresponde ptrI_D
+ *
+ * @return vacio.
+ *
+ * @note
+ */
+    switch(transformacion/10){
+    case 0:{
+        n = n^nXor;
+        break;
+    }
+    case 1:{
+        n = n>>transformacion%10;
+        break;
+    }
+    case 2:{
+        n = n<<transformacion%10;
+        break;
+    }
+    case 3:{
+        n = rotate(n,transformacion%10);
+        break;
+    }
+    }
+    return n;
+}
+void identificarTransformacion(unsigned int* ptrTxt,unsigned char* ptrI_D,int seed,unsigned char* ptrI_M,unsigned char* transformaciones,unsigned char contArr){
     /*
  * @brief ind
  *
@@ -174,87 +203,52 @@ unsigned char identificarTransformacion(unsigned int*ptrTxt, unsigned char*ptrI_
  */
     int con = 0;
     unsigned char transformacion;
-    unsigned int printX0 = ptrI_M[seed+0];
-    unsigned int printX1 = ptrI_M[seed+1];
-    unsigned int printX2 = ptrI_M[seed+2];
-    cout << endl << printX0 << endl;
-    cout << printX1 << endl;
-    cout << printX2 << endl;
-    unsigned int print0 = ptrI_D[seed+0];
-    unsigned int print1 = ptrI_D[seed+1];
-    unsigned int print2 = ptrI_D[seed+2];
-    cout << endl << print0 << endl;
-    cout << print1 << endl;
-    cout << print2 << endl;
     for (int i=0; con!=1; i++){
-        transformacion = 0;
         con = 0;
-        unsigned char aux = ptrTxt[i];
-        if((aux^ptrI_M[seed+i])==ptrI_D[seed+i]){ //xor
+        unsigned char n = ptrTxt[i];
+        n = n^ptrI_M[seed+i];
+        for (int j=contArr-1;j>=0&&contArr!=0; j--){
+            n = doTransformation(transformaciones[j],n,ptrI_M[seed+i]);
+        }
+        if(n==ptrI_D[seed+i]){ //xor
             con++;
             transformacion = 0;
         }
         for(int k=1;k<=8;k++){
-            if(aux>>k==ptrI_D[seed+i]){ //despl. der.
+            unsigned char n = ptrTxt[i];
+            n = n>>k;
+            for (int j=contArr-1;j>=0&&contArr!=0; j--){
+                n = doTransformation(transformaciones[j],n,ptrI_M[seed+i]);
+            }
+            if(n==ptrI_D[seed+i]){ //despl. der.
                 con++;
                 transformacion = 10 + k;
             }
         }
         for(int k=1;k<=7;k++){
-            if(aux<<k==ptrI_D[seed+i]){ //despl. izq.
+            unsigned char n = ptrTxt[i];
+            n = n<<k;
+            for (int j=contArr-1;j>=0&&contArr!=0; j--){
+                n = doTransformation(transformaciones[j],n,ptrI_M[seed+i]);
+            }
+            if(n==ptrI_D[seed+i]){ //despl. izq.
                 con++;
                 transformacion = 20 + k;
             }
         }
         for(unsigned int k=0;k<=7;k++){
-            if(rotate(aux,k)==ptrI_D[seed+i]){ //rot
+            unsigned char n = ptrTxt[i];
+            n = rotate(n,k);
+            for (int j=contArr-1;j>=0&&contArr!=0; j--){
+                n = doTransformation(transformaciones[j],n,ptrI_M[seed+i]);
+            }
+            if(n==ptrI_D[seed+i]){ //rot
                 con++;
                 transformacion = 30 + k;
             }
         }
     }
-    return transformacion;
-}
-
-void transformacionInversa(unsigned char*ptrI_D,unsigned char transformacion,int weightI_D,int heightI_D, unsigned char* ptrI_M){
-    /*
- * @brief Aplica la transformacion inversa al array dado.
- *
- * Esta funcion le aplica la inversa de la transformacion dada al array dado, con ayuda de
- * los parametros del alto y ancho de pixeles de la imagen.
- *
- * @param ptrP puntero del array a aplicarle la inversa.
- * @param transformacion identificador de la transformacion hecha.
- * @param weightI_D ancho de la imagen a la que le corresponde ptrI_D.
- * @param heightI_D alto de la imagen a la que le corresponde ptrI_D
- *
- * @return vacio.
- *
- * @note
- */
-    unsigned int tam = weightI_D * heightI_D * 3;
-    switch(transformacion/10){
-        case 0:{
-            for(unsigned int i=0;i<tam;i++){
-                ptrI_D[i] = ptrI_D[i]^ptrI_M[i];
-            }
-        }
-        case 1:{
-            for(unsigned int i=0;i<tam;i++){
-                ptrI_D[i] = ptrI_D[i]<<transformacion%10;
-            }
-        }
-        case 2:{
-            for(unsigned int i=0;i<tam;i++){
-                ptrI_D[i] = ptrI_D[i]>>transformacion%10;
-            }
-        }
-        case 3:{
-            for(unsigned int i=0;i<tam;i++){
-                rotate(ptrI_D[i], 8-(transformacion%10));
-            }
-        }
-    }
+    transformaciones[contArr] = transformacion;
 }
 
 #endif
