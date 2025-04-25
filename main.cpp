@@ -8,24 +8,24 @@
 using namespace std;
 
 int main(){
-    int weightI_D,heightI_D,weightM,heightM,weightI_M,heightI_M;
-    string rutaCarpeta;
+    int weightI_D,heightI_D,weightM,heightM,weightI_M,heightI_M;    //alto y ancho de las imagenes(necesario para funciones)
+    string rutaCarpeta; //ruta carpeto donde se guardan todos los archivos necesarios
     cout << "Ingrese la ruta de la carpeta: ";
     getline(cin,rutaCarpeta);
     QString parCarpeta = QString::fromStdString(rutaCarpeta);
-    unsigned int nTxt;
-    QString rutaI_D = construirRutaArchivo(parCarpeta,"I_D.bmp");
+    unsigned int nTxt;  //cantidad de archivos del tipo M#.txt
+    const QString rutaI_D = construirRutaArchivo(parCarpeta,"I_D.bmp");
     unsigned char* ptrI_D = loadPixels(rutaI_D, weightI_D, heightI_D); // apuntador hacia datos imagen
-    QString rutaM = construirRutaArchivo(parCarpeta,"M.bmp");
+    const QString rutaM = construirRutaArchivo(parCarpeta,"M.bmp");
     unsigned char* ptrM = loadPixels(rutaM, weightM, heightM);
-    QString rutaI_M = construirRutaArchivo(parCarpeta,"I_M.bmp");
+    const QString rutaI_M = construirRutaArchivo(parCarpeta,"I_M.bmp");
     unsigned char* ptrI_M = loadPixels(rutaI_M, weightI_M, heightI_M);
     cout << "Ingrese la cantidad de archivos txt: ";
     cin >> nTxt;
-    unsigned char* transformaciones = new unsigned char[nTxt];
+    unsigned char* transformaciones = new unsigned char[nTxt];  //array donde se guarda los tipos de transformaciones hechos
     cin.ignore();
     for(unsigned char i=0;i<nTxt;i++){ //CANTIDAD DE TXTs
-        int seed;
+        int seed; //semilla o ubicacion de la mascara
         int nPixeles = 0;
         QString rutaInputTxt = construirRutaArchivo(parCarpeta,QString("M%1.txt").arg(nTxt-i-1));
         string InputTxt = rutaInputTxt.toStdString();

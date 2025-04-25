@@ -12,11 +12,30 @@
 using namespace std;
 
 QString construirRutaArchivo(const QString& carpeta, const QString& nombreArchivo) {
+    /*
+ * @brief Busca una archivo en una carpeta y devuelve su ruta.
+ *
+ * busca un archivo en una carpeta determinada y devuelve su ruta, a partir dse su nombre.
+ *
+ * @param carpeta ruta de la carpeta (tipo const QString&).
+ * @param nombreArchivo nombre del archivo junto con su extension(tipo const QString&).
+ * @return ruta del archivo en especifico (tipo QString).
+ */
     QDir dir(carpeta);
     return dir.filePath(nombreArchivo);
 }
 
 unsigned char rotate(unsigned char ent, unsigned int n) {
+    /*
+ * @brief Rotacion a nivel de bits de un numero.
+ *
+ * Rota los binarios de un numero hacia la derecha, es decir, aquellos que se desbordan por la
+ * derecha vuelven por la izquierda.
+ *
+ * @param ent numero al cual hacerle la rotacion (tipo unsigned char).
+ * @param n cantidad de rotaciones a hacer (tipo unsigned int).
+ * @return nu8mero resultado de las rotaciones (tipo unsigned char).
+ */
     return (ent >> n) | (ent << (8 - n));
 }
 
@@ -124,19 +143,15 @@ void restarArreglos(unsigned int*ptrTxt, unsigned char*ptrM, int nPixeles){
 
 
 }
+
 unsigned char doTransformation(unsigned char transformacion, unsigned char n, unsigned char nXor){
     /*
- * @brief Aplica la transformacion inversa al array dado.
+ * @brief Aplica una transformacion determinada a un numero.
  *
- * Esta funcion le aplica la inversa de la transformacion dada al array dado, con ayuda de
- * los parametros del alto y ancho de pixeles de la imagen.
- *
- * @param ptrP puntero del array a aplicarle la inversa.
- * @param transformacion identificador de la transformacion hecha.
- * @param weightI_D ancho de la imagen a la que le corresponde ptrI_D.
- * @param heightI_D alto de la imagen a la que le corresponde ptrI_D
- *
- * @return vacio.
+ * @param transformacion identificador de la transformacion a hacer (tipo unsigned char).
+ * @param n numero al que hacerle la transformacion(tipo unsigned char).
+ * @param nXor numero con el que hacerle xor en caso de que sea ese tipo de transformacion (tipo unsigned char).
+ * @return resultado de la transformacion (tipo unsigned char).
  *
  * @note
  */
@@ -160,18 +175,21 @@ unsigned char doTransformation(unsigned char transformacion, unsigned char n, un
     }
     return n;
 }
+
 void identificarTransformacion(unsigned int* ptrTxt,unsigned char* ptrI_D,int seed,unsigned char* ptrI_M,unsigned char* transformaciones,unsigned char contArr){
     /*
- * @brief ind
+ * @brief identifica la transformacion hecha anteriormente
  *
- * ind
  *
- * @param ptrTxt Ruta del archivo de texto que contiene la semilla y los valores RGB.
- * @param seed Variable de referencia donde se almacenará el valor entero de la semilla.
- * @param n_pixels Variable de referencia donde se almacenará la cantidad de píxeles leídos
- *                 (equivalente al número de líneas después de la semilla).
  *
- * @return ind
+ * @param ptrTxt apuntador a la lista de informacion de los pixeles en un archivo del tipo M#.txt determinado. (tipo unsigned int*)
+ * @param ptrI_D apuntador a la lista de informacion de los pixeles en el archivo I_D.bmp. (tipo unsigned char* ptrI_D)
+ * @param seed referencia del indice en del primer valor en el cual se aplica la mascara. (tipo int)
+ * @param ptrI_M apuntador a la lista de informacion de los pixeles en el archivo I_M.bmp. (tipo unsigned char* ptrI_M)
+ * @param transformaciones apuntador al array donde se guardan las transformaciones hechas. (tipo unsigned char)
+ * @param contArr indice de control multiproposito referente al array transformaciones (tipo unsigned char)
+ *
+ * @return void
  *
  * @note
  */
@@ -226,6 +244,19 @@ void identificarTransformacion(unsigned int* ptrTxt,unsigned char* ptrI_D,int se
 }
 
 void PrintTransformaciones(unsigned char* transformaciones, unsigned int nTxt){
+    /*
+ * @brief imprime las transformaciones
+ *
+ * imprime las transformaciones con sus respectivos nombres y orden a partir de una
+ * lista.
+ *
+ * @param transformaciones apuntador al array de transformaciones. (tipo unsigned char*)
+ * @param nTxt cantidad de archivos tipo M#.txt. (tipo unsigned int)
+ *
+ * @return void
+ *
+ * @note
+ */
     for (unsigned int i = 0 ; i < nTxt ; i++){
         switch(transformaciones[i]/10){
             case 0:
